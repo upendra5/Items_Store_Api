@@ -1,0 +1,327 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: The Electronics Store Api
+# during dev, should point to your local machine
+host: electronicstoreapi.herokuapp.com
+# basePath prefixes all resource paths 
+basePath: /v1  
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+  - text/plain
+paths:
+
+  /employees/login:
+    x-swagger-router-controller: employee
+    get:
+      description: authenticate employee and generates a jwt token
+      operationId: loginemployees
+      parameters:
+      - in: query
+        name: username
+        type: string
+      - in: query
+        name: password
+        type: string
+      responses: 
+        "200":
+          description: Success 
+          schema:
+            type: object
+            properties:
+              success: 
+               type: string
+              message:
+               type: string
+              token:
+               type: string
+        "400":
+          description: login failed
+          schema:
+            type: string 
+ 
+  /employees:
+    x-swagger-router-controller: employee
+    get:
+      description: Return all the employees
+      operationId: getemployees
+      responses: 
+        "200":
+          description: Success get all the employees
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Employee"
+        "500":
+          description: Unexpected Error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+      
+    post:
+      description: Create one new Employee
+      operationId: postemployees
+      parameters:
+        - in: body
+          name: body
+          description: The employee to be added
+          required: true
+          schema:
+            type: object
+            properties:
+              name:
+               type: string
+              password:
+               type: string
+      responses:
+        "204":
+          description: Sucess
+        "500":
+          description: unexpected Error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+      
+      
+  /Employees/{EmployeeId}:
+    x-swagger-router-controller: employee
+    parameters:
+    - in: path
+      name: EmployeeId
+      type: integer
+      required: true
+      description: Numeric Id of the Employee
+    get:
+      description: get details of a particular employee
+      operationId: findemployee
+      responses:
+        "204":
+          description: Success 
+          schema:
+            type: object
+            properties:
+              success: 
+               type: string
+              message:
+               type: string
+              token:
+               type: string
+        "404":
+          description: The Id passed does not match any Employee.
+        "500":
+          description: unexpected Error
+          schema:
+            type: object
+            properties:
+                message:
+                    type: string 
+    delete:
+      description: Remove a Employee
+      operationId: deleteemployee
+      responses:
+        "204":
+          description: Success
+        "404":
+          description: The Id passed does not match any Employee.
+        "500":
+          description: unexpected Error
+          schema:
+            type: object
+            properties:
+                message:
+                    type: string
+      
+    put:
+      parameters:
+       - name: Employee
+         in: body
+         schema:
+           type: object
+           properties:
+            name:
+             type: string
+            password:
+             type: string
+         required: true
+         description: Id of the Employee you want to get the comments.
+       
+      description: updates a Employee
+      operationId: putemployees
+      responses:
+        "204":
+          description: Success
+        "404":
+          description: The Id passed does not match any Employee.
+        "500":
+          description: unexpected Error
+          schema:
+            type: object
+            properties:
+                message:
+                    type: string
+      
+ 
+  /Items:
+    x-swagger-router-controller: item
+    get:
+      description: Return all the Items(need to send jwt token from employee/login in the authorization(bearer token))
+      operationId: getItems
+      responses: 
+        "200":
+          description: Success get all the Items
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Item"
+        "500":
+          description: Unexpected Error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+    post:
+      description: Create one new Item(need to send jwt token from employee/login in the authorization(bearer token))
+      operationId: postItems
+      parameters:
+        - in: body
+          name: body
+          description: The item to be added
+          required: true
+          schema:
+            type: object
+            properties:
+             name:
+              type: string
+             stock:
+              type: integer
+      responses:
+        "204":
+          description: Sucess
+        "500":
+          description: unexpected Error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+      
+  /Items/{ItemId}:
+    x-swagger-router-controller: Item
+    parameters:
+    - in: path
+      name: ItemId
+      type: integer
+      required: true
+      description: Numeric Id of the Item
+    get:
+      description: get details of a particular item(need to send jwt token from employee/login in the authorization(bearer token))
+      operationId: findItem
+      responses:
+        "204":
+          description: Success 
+          schema:
+            type: object
+            properties:
+              success: 
+               type: string
+              message:
+               type: string
+              token:
+               type: string
+        "404":
+          description: The Id passed does not match any Item.
+        "500":
+          description: unexpected Error
+          schema:
+            type: object
+            properties:
+                message:
+                    type: string 
+    delete:
+      description: Remove a Item(need to send jwt token from employee/login in the authorization(bearer token))
+      operationId: deleteItem
+      responses:
+        "204":
+          description: Success
+        "404":
+          description: The Id passed does not match any Item.
+        "500":
+          description: unexpected Error
+          schema:
+            type: object
+            properties:
+                message:
+                    type: string
+    put:
+      parameters:
+      - in: body
+        name: Item
+        schema:
+         type: object
+         properties:
+          name: 
+           type: string
+          stock:
+           type: integer
+        required: true
+        description: Id of the Item .
+      description: updates a Item(need to send jwt token from employee/login in the authorization(bearer token))
+      operationId: putItems
+      responses:
+        "204":
+          description: Success
+          schema:
+            type: object
+            properties:
+                message:
+                    type: string
+        "404":
+          description: The Id passed does not match any Item.
+        "500":
+          description: unexpected Error
+          schema:
+            type: object
+            properties:
+                message:
+                    type: string  
+
+  
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+
+definitions:
+  Employee:
+    properties:
+      id:
+        type: integer
+      name: 
+        type: string
+      password:
+        type: string
+  Item:
+     properties:
+      id:
+        type: integer
+      name: 
+        type: string
+      stock:
+        type: integer
+      price:
+        type: integer
+ 
+
+
