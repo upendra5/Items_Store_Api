@@ -8,7 +8,7 @@
   "license": "",
   "main": "app.js",
   "dependencies": {
-    "express": "^4.12.3",
+    "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
     "mysql": "^2.17.1",
